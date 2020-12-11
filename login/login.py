@@ -11,7 +11,7 @@ from . import crud
 
 router = APIRouter()
 
-models.Base.metadata.create_all(bind=engine)
+
 ACCESS_TOKEN_EXPIRE_MINUTES = 10
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth")
 
@@ -49,7 +49,7 @@ async def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_
 
 
 @router.post("/api/users/", response_model=schemas.User)
-async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db), current_user: schemas.User = Depends(get_current_user)):
+async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_username(db, username=user.username)
     if db_user:
         raise HTTPException(
