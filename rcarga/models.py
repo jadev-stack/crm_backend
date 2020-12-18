@@ -40,9 +40,8 @@ class Rcarga(Base):
     division_id = Column(Integer, ForeignKey("division.id"))
     sede_id = Column(Integer, ForeignKey("sede.id"))
 
-    rcarga_item = relationship("Rcarga_Item")
-    rcarga_despacho = relationship("Rcarga_Despacho")
-
+    rcarga_despacho = relationship("Rcarga_Despacho", back_populates="rcarga")
+    rcarga_item = relationship("Rcarga_Item", back_populates="rcarga")
     rcarga_division = relationship("Division", back_populates="rcarga")
     rcarga_estatus = relationship("Rcarga_Estatus", back_populates="rcarga")
     rcarga_ruta = relationship("Rcarga_Ruta", back_populates="rcarga")
@@ -60,7 +59,8 @@ class Rcarga_Item(Base):
     rcarga_id = Column(Integer, ForeignKey("rcarga.id"))
     sistema = Column(String(30))
 
-    rcarga_liqui = relationship("Rcarga_Liqui")
+    rcarga = relationship("Rcarga", back_populates="rcarga_item")
+    rcarga_liqui = relationship("Rcarga_Liqui", back_populates="rcarga_item")
 
 
 class Rcarga_Despacho(Base):
@@ -71,6 +71,8 @@ class Rcarga_Despacho(Base):
     fecha = Column(DATETIME)
     rcarga_id = Column(Integer, ForeignKey("rcarga.id"))
 
+    rcarga = relationship("Rcarga", back_populates="rcarga_despacho")
+
 
 class Rcarga_Liqui(Base):
     __tablename__ = "rcarga_liqui"
@@ -80,3 +82,5 @@ class Rcarga_Liqui(Base):
     docpago = Column(String)
     fechare = Column(DATETIME)
     rcarga_item_id = Column(Integer, ForeignKey("rcarga_item.id"))
+
+    rcarga_item = relationship("Rcarga_Item", back_populates="rcarga_liqui")

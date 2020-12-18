@@ -1,8 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from login import login, schemas as schlogin
 from sqlalchemy.orm import Session
-from database.crmbdd import SessionLocal, engine, get_db
+from database.crmbdd import get_db
+from database.eurolicores import get_db as get_lico
 from typing import List
+
 from . import schemas
 from . import models
 from . import crud
@@ -157,7 +159,7 @@ def delete_a_rcarga(rcarga_id: int, db: Session = Depends(get_db)):
 """ Rcarga_Items """
 
 
-@router.get("/api/rcarga_item/{rcarga_id}", response_model=schemas.Rcarga_Item)
+@router.get("/api/rcarga_item/{rcarga_id}", response_model=List[schemas.Rcarga_Item])
 def read_rcarga_items_by_id(rcarga_id: int, db: Session = Depends(get_db)):
     db_rcarga = crud.get_rcarga_items_by_id(
         db, rcarga_id=rcarga_id)
@@ -165,3 +167,10 @@ def read_rcarga_items_by_id(rcarga_id: int, db: Session = Depends(get_db)):
         raise HTTPException(
             status_code=404, detail="Relacion de Carga No Posee Documentos")
     return db_rcarga
+
+
+@router.post("/api/rcarga_item/{rcarga_id}/{DocNum}", response_model=schemas.Rcarga_Item)
+def create_rcarga_item(rcarga_id: int, DocNum: int, db: Session = Depends(get_db),
+                       dlico: Session = Depends(get_lico)):
+
+    return crud.create_rcarga_item(db=db, rcarga_id=rcarga_id, DocNum=DocNum, dlico=dlico)

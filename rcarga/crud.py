@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
-
+from fastapi import HTTPException
 from . import schemas
 from . import models
+from . import mosap
 
 
 """ Rcarga_Estatus """
@@ -140,3 +141,35 @@ def delete_rcarga(db: Session, rcarga_id: int):
 
 def get_rcarga_items_by_id(db: Session, rcarga_id: int):
     return db.query(models.Rcarga_Item).filter(models.Rcarga_Item.rcarga_id == rcarga_id).all()
+
+
+def create_rcarga_item(db: Session, dlico: Session, rcarga_id: int, DocNum: int):
+    invoice = dlico.query(mosap.ItemsDoc).filter(
+        mosap.ItemsDoc.DocNum == DocNum).first()
+    if invoice is None:
+        raise HTTPException(
+            status_code=404, detail="Documento no Existe")
+    else:
+        print('Encontrado')
+    db_rcarga_item = models.Rcarga_Item(docnum=DocNum,
+                                        cardname=invoice.CardName,
+                                        cajas=invoice.Cajas,
+                                        unidad=invoice.Unidad,
+                                        totalvalor=invoice.TotalValor,
+                                        rcarga_id=rcarga_id,
+                                        sistema='SAP')
+    db.add(db_rcarga_item)
+    db.commit()
+    db.refresh(db_rcarga_item)
+    return db_rcarga_item
+
+
+def get_invoice_items(DocNum: int, db: Session):
+    invoice = db.query(mosap.ItemsDoc).filter(
+        mosap.ItemsDoc.DocNum == DocNum).first()
+    if invoice is None:
+        raise HTTPException(
+            status_code=404, detail="Documento no Existe")
+    else:
+        print('Encontrado')
+        return invoice

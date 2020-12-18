@@ -70,11 +70,25 @@ class RcargaCreate(BaseModel):
     sede_id: int
 
 
-""" Rcarga """
+""" Rcarga_Item """
 
 
 class Rcarga_Item(BaseModel):
     id: int
+    docnum: int
+    cardname: str
+    cajas: int
+    unidad: int
+    totalvalor: float
+    rcarga_id: int
+    sistema: str
+    rcarga: Rcarga
+
+    class Config:
+        orm_mode = True
+
+
+class Rcarga_ItemCreate(BaseModel):
     docnum: int
     cardname: str
     cajas: int
