@@ -1,5 +1,5 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DATETIME, Float
-from database.eurolicores import Base as Eurolicores
+from database.crmbdd import Base as Eurolicores
 from sqlalchemy.orm import relationship
 from datetime import datetime
 

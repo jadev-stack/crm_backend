@@ -9,89 +9,89 @@ from . import mosap
 
 
 def get_rcarga_estatus(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Rcarga_Estatus).offset(skip).limit(limit).all()
+    return db.crm.query(models.Rcarga_Estatus).offset(skip).limit(limit).all()
 
 
 def get_rcarga_estatus_by_id(db: Session, rcarga_estatus_id: int):
-    return db.query(models.Rcarga_Estatus).filter(models.Rcarga_Estatus.id == rcarga_estatus_id).first()
+    return db.crm.query(models.Rcarga_Estatus).filter(models.Rcarga_Estatus.id == rcarga_estatus_id).first()
 
 
 def create_rcarga_estatus(db: Session, rcarga_estatus: schemas.Rcarga_Estatus):
     db_rcarga_estatus = models.Rcarga_Estatus(estatus=rcarga_estatus.estatus)
-    db.add(db_rcarga_estatus)
-    db.commit()
-    db.refresh(db_rcarga_estatus)
+    db.crm.add(db_rcarga_estatus)
+    db.crm.commit()
+    db.crm.refresh(db_rcarga_estatus)
     return db_rcarga_estatus
 
 
 def update_rcarga_estatus(db: Session, rcarga_estatus: schemas.Rcarga_Estatus, rcarga_estatus_id: int):
-    db_rcarga_estatus = db.query(models.Rcarga_Estatus).filter(
+    db_rcarga_estatus = db.crm.query(models.Rcarga_Estatus).filter(
         models.Rcarga_Estatus.id == rcarga_estatus_id).first()
     db_rcarga_estatus.estatus = rcarga_estatus.estatus
-    db.commit()
-    db.refresh(db_rcarga_estatus)
+    db.crm.commit()
+    db.crm.refresh(db_rcarga_estatus)
     return {**rcarga_estatus.dict(), "id": rcarga_estatus_id}
 
 
 def delete_rcarga_estatus(db: Session, rcarga_estatus_id: int):
-    rcarga_estatus = db.query(models.Rcarga_Estatus).filter(
+    rcarga_estatus = db.crm.query(models.Rcarga_Estatus).filter(
         models.Rcarga_Estatus.id == rcarga_estatus_id).first()
-    db.delete(rcarga_estatus)
-    db.commit()
+    db.crm.delete(rcarga_estatus)
+    db.crm.commit()
 
 
 """ Rcarga_Ruta """
 
 
 def get_rcarga_ruta(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Rcarga_Ruta).offset(skip).limit(limit).all()
+    return db.crm.query(models.Rcarga_Ruta).offset(skip).limit(limit).all()
 
 
 def get_rcarga_ruta_by_id(db: Session, rcarga_ruta_id: int):
-    return db.query(models.Rcarga_Ruta).filter(models.Rcarga_Ruta.id == rcarga_ruta_id).first()
+    return db.crm.query(models.Rcarga_Ruta).filter(models.Rcarga_Ruta.id == rcarga_ruta_id).first()
 
 
 def create_rcarga_ruta(db: Session, rcarga_ruta: schemas.Rcarga_Ruta):
     db_rcarga_ruta = models.Rcarga_Ruta(ruta=rcarga_ruta.ruta,
                                         objetivo=rcarga_ruta.objetivo,
                                         division_id=rcarga_ruta.division_id)
-    db.add(db_rcarga_ruta)
-    db.commit()
-    db.refresh(db_rcarga_ruta)
+    db.crm.add(db_rcarga_ruta)
+    db.crm.commit()
+    db.crm.refresh(db_rcarga_ruta)
     return db_rcarga_ruta
 
 
 def update_rcarga_ruta(db: Session, rcarga_ruta: schemas.Rcarga_Ruta, rcarga_ruta_id: int):
-    db_rcarga_ruta = db.query(models.Rcarga_Ruta).filter(
+    db_rcarga_ruta = db.crm.query(models.Rcarga_Ruta).filter(
         models.Rcarga_Ruta.id == rcarga_ruta_id).first()
     db_rcarga_ruta.ruta = rcarga_ruta.ruta
     db_rcarga_ruta.objectivo = rcarga_ruta.objetivo
     db_rcarga_ruta.division_id = rcarga_ruta.division_id
-    db.commit()
-    db.refresh(db_rcarga_ruta)
+    db.crm.commit()
+    db.crm.refresh(db_rcarga_ruta)
     return {**rcarga_ruta.dict(), "id": rcarga_ruta_id}
 
 
 def delete_rcarga_ruta(db: Session, rcarga_ruta_id: int):
-    rcarga_ruta = db.query(models.Rcarga_Ruta).filter(
+    rcarga_ruta = db.crm.query(models.Rcarga_Ruta).filter(
         models.Rcarga_Ruta.id == rcarga_ruta_id).first()
-    db.delete(rcarga_ruta)
-    db.commit()
+    db.crm.delete(rcarga_ruta)
+    db.crm.commit()
 
 
 """Rcarga"""
 
 
 def get_rcarga(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Rcarga).offset(skip).limit(limit).all()
+    return db.crm.query(models.Rcarga).offset(skip).limit(limit).all()
 
 
-def get_rcarga_by_id(db: Session, rcarga_ruta_id: int):
-    return db.query(models.Rcarga).filter(models.Rcarga.id == rcarga_id).first()
+def get_rcarga_by_id(db: Session, rcarga_id: int):
+    return db.crm.query(models.Rcarga).filter(models.Rcarga.id == rcarga_id).first()
 
 
 def create_rcarga(db: Session, rcarga: schemas.Rcarga):
-    data = db.query(models.Rcarga).filter(models.Rcarga.division_id == rcarga.division_id).filter(
+    data = db.crm.query(models.Rcarga).filter(models.Rcarga.division_id == rcarga.division_id).filter(
         models.Rcarga.sede_id == rcarga.sede_id).order_by(models.Rcarga.id.desc()).first()
     if data is None:
         docnum = 1
@@ -106,14 +106,14 @@ def create_rcarga(db: Session, rcarga: schemas.Rcarga):
                               user_id=rcarga.user_id,
                               division_id=rcarga.division_id,
                               sede_id=rcarga.sede_id)
-    db.add(db_rcarga)
-    db.commit()
-    db.refresh(db_rcarga)
+    db.crm.add(db_rcarga)
+    db.crm.commit()
+    db.crm.refresh(db_rcarga)
     return db_rcarga
 
 
 def update_rcarga(db: Session, rcarga: schemas.Rcarga, rcarga_id: int):
-    db_rcarga = db.query(models.Rcarga).filter(
+    db_rcarga = db.crm.query(models.Rcarga).filter(
         models.Rcarga.id == rcarga_id).first()
     db_rcarga.fecha = rcarga.fecha
     db_rcarga.total = rcarga.total
@@ -124,52 +124,68 @@ def update_rcarga(db: Session, rcarga: schemas.Rcarga, rcarga_id: int):
     db_rcarga.user_id = rcarga.user_id
     db_rcarga.division_id = rcarga.division_id
     db_rcarga.sede_id = rcarga.sede_id
-    db.commit()
-    db.refresh(db_rcarga)
+    db.crm.commit()
+    db.crm.refresh(db_rcarga)
     return {**rcarga.dict(), "id": rcarga_id}
 
 
 def delete_rcarga(db: Session, rcarga_id: int):
-    rcarga = db.query(models.Rcarga).filter(
+    rcarga = db.crm.query(models.Rcarga).filter(
         models.Rcarga.id == rcarga_id).first()
-    db.delete(rcarga)
-    db.commit()
+    db.crm.delete(rcarga)
+    db.crm.commit()
 
 
 """Rcarga_Items"""
 
 
 def get_rcarga_items_by_id(db: Session, rcarga_id: int):
-    return db.query(models.Rcarga_Item).filter(models.Rcarga_Item.rcarga_id == rcarga_id).all()
+    return db.crm.query(models.Rcarga_Item).filter(models.Rcarga_Item.rcarga_id == rcarga_id).all()
 
 
-def create_rcarga_item(db: Session, dlico: Session, rcarga_id: int, DocNum: int):
-    invoice = dlico.query(mosap.ItemsDoc).filter(
-        mosap.ItemsDoc.DocNum == DocNum).first()
-    if invoice is None:
-        raise HTTPException(
-            status_code=404, detail="Documento no Existe")
+def get_rcarga_item_by_id(db: Session, rcarga_id: int):
+    return db.crm.query(models.Rcarga_Item).filter(models.Rcarga_Item.id == rcarga_id).first()
+
+
+def get_invoice_items(db: Session, DocNum: int, divi: int):
+    if divi == 1:
+        return db.lico.query(mosap.ItemsDoc).filter(mosap.ItemsDoc.DocNum == DocNum).first()
+    elif divi == 2:
+        return db.distri.query(mosap.ItemsDoc).filter(mosap.ItemsDoc.DocNum == DocNum).first()
+    elif divi == 3:
+        return db.mobil.query(mosap.ItemsDoc).filter(mosap.ItemsDoc.DocNum == DocNum).first()
     else:
-        print('Encontrado')
-    db_rcarga_item = models.Rcarga_Item(docnum=DocNum,
+        raise HTTPException(
+            status_code=404, detail="Division No Encontrada")
+
+
+def create_rcarga_item(db: Session, rcarga_id: int, sis: str, invoice: schemas.Invoice):
+    db_rcarga = db.crm.query(models.Rcarga).filter(
+        models.Rcarga.id == rcarga_id).first()
+
+    db.crm.query(models.Rcarga).filter(models.Rcarga.id == rcarga_id).update(
+        dict(total=round(db_rcarga.total+invoice.TotalValor, 2)))
+    db_rcarga_item = models.Rcarga_Item(docnum=invoice.DocNum,
                                         cardname=invoice.CardName,
                                         cajas=invoice.Cajas,
                                         unidad=invoice.Unidad,
                                         totalvalor=invoice.TotalValor,
                                         rcarga_id=rcarga_id,
-                                        sistema='SAP')
-    db.add(db_rcarga_item)
-    db.commit()
-    db.refresh(db_rcarga_item)
+                                        sistema=sis)
+    db.crm.add(db_rcarga_item)
+    db.crm.commit()
+    db.crm.refresh(db_rcarga_item)
     return db_rcarga_item
 
 
-def get_invoice_items(DocNum: int, db: Session):
-    invoice = db.query(mosap.ItemsDoc).filter(
-        mosap.ItemsDoc.DocNum == DocNum).first()
-    if invoice is None:
-        raise HTTPException(
-            status_code=404, detail="Documento no Existe")
-    else:
-        print('Encontrado')
-        return invoice
+def delete_rcarga_item(db: Session, rcarga_id: int):
+    rcargaitem = db.crm.query(models.Rcarga_Item).filter(
+        models.Rcarga_Item.id == rcarga_id).first()
+    rcarga = db.crm.query(models.Rcarga).filter(
+        models.Rcarga.id == rcargaitem.rcarga_id).first()
+
+    db.crm.query(models.Rcarga).filter(models.Rcarga.id == rcargaitem.rcarga_id).update(
+        dict(total=round(rcarga.total-rcargaitem.totalvalor, 2)))
+
+    db.crm.delete(rcargaitem)
+    db.crm.commit()

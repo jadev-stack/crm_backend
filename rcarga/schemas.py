@@ -96,3 +96,15 @@ class Rcarga_ItemCreate(BaseModel):
     totalvalor: float
     rcarga_id: int
     sistema: str
+
+    class Config:
+        orm_mode = True
+
+
+class Invoice(BaseModel):
+    DocNum: int
+    CardCode: str
+    CardName: str
+    Cajas: int
+    Unidad: int
+    TotalValor: float
