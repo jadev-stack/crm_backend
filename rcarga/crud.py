@@ -129,6 +129,15 @@ def update_rcarga(db: Session, rcarga: schemas.Rcarga, rcarga_id: int):
     return {**rcarga.dict(), "id": rcarga_id}
 
 
+def update_estatus_rcarga(db: Session, rcarga_id: int, estatus: int):
+    db.crm.query(models.Rcarga).filter(models.Rcarga.id == rcarga_id).update(
+        dict(estatus_id=estatus))
+    db.crm.commit()
+    rcarga = db.crm.query(models.Rcarga).filter(
+        models.Rcarga.id == rcarga_id).first()
+    return rcarga
+
+
 def delete_rcarga(db: Session, rcarga_id: int):
     rcarga = db.crm.query(models.Rcarga).filter(
         models.Rcarga.id == rcarga_id).first()

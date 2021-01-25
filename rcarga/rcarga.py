@@ -142,7 +142,17 @@ def update_rcarga(rcarga_id: int, rcarga: schemas.RcargaCreate, db: DbParams = D
     if db_rcarga is None:
         raise HTTPException(
             status_code=404, detail="Relacion de Carga no Existe")
-    return crud.update_rcarga(db=db, rcarga=rcarga_ruta, rcarga_id=rcarga_id)
+    return crud.update_rcarga(db=db, rcarga=rcarga, rcarga_id=rcarga_id)
+
+
+@router.put("/api/rcarga_update/{rcarga_id}/{estatus}", response_model=schemas.Rcarga)
+def update_rcarga(rcarga_id: int, estatus: int, db: DbParams = Depends(DbParams)):
+    db_rcarga = crud.get_rcarga_by_id(
+        db, rcarga_id=rcarga_id)
+    if db_rcarga is None:
+        raise HTTPException(
+            status_code=404, detail="Relacion de Carga no Existe")
+    return crud.update_estatus_rcarga(db=db, rcarga_id=rcarga_id, estatus=estatus,)
 
 
 @router.delete("/api/rcarga/{rcarga_id}")
