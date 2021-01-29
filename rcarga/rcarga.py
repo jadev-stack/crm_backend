@@ -8,6 +8,7 @@ from typing import List
 from . import schemas
 from . import models
 from . import crud
+from login.schemas import User
 
 router = APIRouter()
 
@@ -208,3 +209,24 @@ def read_rcarga_by_id(rcarga_id: int, db: DbParams = Depends(DbParams)):
         raise HTTPException(
             status_code=404, detail="Item de Relacion de Carga no Existe")
     return db_rcarga
+
+
+""" Rcarga_view """
+
+
+@router.get("/api/rcarga_despacho", response_model=List[schemas.Rcarga_View])
+def read_rcarga_despacho(skip: int = 0, limit: int = 150, db: DbParams = Depends(DbParams)):
+    rcarga_despacho = crud.get_rcarga_despacho(db, skip=skip, limit=limit)
+    return rcarga_despacho
+
+
+@router.get("/api/chofer", response_model=List[schemas.Grupos_View])
+def read_chofer(db: DbParams = Depends(DbParams), grupo: str = 'CHOFER'):
+    users_grupo = crud.get_users_grupo(db, grupo=grupo)
+    return users_grupo
+
+
+@router.get("/api/ayudante", response_model=List[schemas.Grupos_View])
+def read_ayudante(db: DbParams = Depends(DbParams),  grupo: str = 'AYUDATES'):
+    rcarga_despacho = crud.get_users_grupo(db, grupo=grupo)
+    return rcarga_despacho

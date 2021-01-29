@@ -68,6 +68,7 @@ async def read_user(user_id: int, db: Session = Depends(get_db), current_user: s
 @router.post("/api/auth", response_model=schemas.Token)
 async def authenticate_user(user: schemas.UserAuthenticate, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_username(db, username=user.username)
+
     if db_user is None:
         raise HTTPException(status_code=400, detail="Usuario no Existe")
     else:
@@ -76,10 +77,19 @@ async def authenticate_user(user: schemas.UserAuthenticate, db: Session = Depend
             raise HTTPException(
                 status_code=400, detail="Contraseña Invalida")
         else:
+            user_data = crud.get_user_data(db, user_id=db_user.id)
+            if user_data is None:
+                raise HTTPException(
+                    status_code=400, detail="Usuario no Posee Datos")
+
+            user_cargo = crud.get_user_cargo(db, user_id=db_user.id)
+            user_group = crud.get_user_group(db, user_id=db_user.id)
             from datetime import timedelta
             access_token_expires = timedelta(
                 minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
             from .utils import create_access_token
             access_token = create_access_token(
                 data={"sub": user.username}, expires_delta=access_token_expires)
-            return {"access_token": access_token, "token_type": "Bearer"}
+            return {"access_token": access_token, "token_type": "Bearer",
+                    "username": user.username, "user_sede": user_data.sede_id,
+                    "user_cargo": user_cargo.cargo_id, "user_group": user_group.grupo_id}

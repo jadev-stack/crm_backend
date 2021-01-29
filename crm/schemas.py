@@ -11,3 +11,11 @@ class Crm(BaseModel):
 
 class CrmCreate(BaseModel):
     name: str
+
+
+class Flota(BaseModel):
+    id: int
+    placa: str
+
+    class Config:
+        orm_mode = True

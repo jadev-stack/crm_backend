@@ -1,6 +1,7 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DATETIME, Float
 from database.crmbdd import Base
 from sqlalchemy.orm import relationship
+from login.models import *
 
 
 class Sede(Base):
@@ -10,6 +11,14 @@ class Sede(Base):
     name = Column(String(30))
 
     rcarga = relationship("Rcarga")
+    user_data = relationship("User_Data")
+
+
+class Flota(Base):
+    __tablename__ = "flota"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    placa = Column(String(30))
 
 
 class Division(Base):
@@ -27,3 +36,5 @@ class Cargo(Base):
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String(30))
+
+    user_cargo = relationship("User_Cargo")

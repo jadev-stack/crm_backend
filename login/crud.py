@@ -36,3 +36,15 @@ def check_username_password(db: Session, user: schemas.UserAuthenticate):
     db_user_info: models.User = get_user_by_username(
         db, username=user.username)
     return bcrypt.checkpw(user.hashed_password.encode('utf-8'), db_user_info.hashed_password.encode('utf-8'))
+
+
+def get_user_data(db: Session, user_id: int):
+    return db.query(models.User_Data).filter(models.User_Data.user_id == user_id).first()
+
+
+def get_user_cargo(db: Session, user_id: int):
+    return db.query(models.User_Cargo).filter(models.User_Cargo.user_id == user_id).first()
+
+
+def get_user_group(db: Session, user_id: int):
+    return db.query(models.User_Group).filter(models.User_Group.user_id == user_id).first()

@@ -136,3 +136,12 @@ def delete_a_sede(division_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Division no Existe")
     crud.delete_division(db, division_id)
     return {"detail": "Division Eliminado"}
+
+
+""" Flota """
+
+
+@router.get("/api/flota", response_model=List[schemas.Flota])
+def read_cargos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    cargos = crud.get_flota(db, skip=skip, limit=limit)
+    return cargos

@@ -3,6 +3,7 @@ from fastapi import HTTPException
 from . import schemas
 from . import models
 from . import mosap
+from login.models import User
 
 
 """ Rcarga_Estatus """
@@ -198,3 +199,14 @@ def delete_rcarga_item(db: Session, rcarga_id: int):
 
     db.crm.delete(rcargaitem)
     db.crm.commit()
+
+
+"""Rcarga_Despacho"""
+
+
+def get_rcarga_despacho(db: Session, skip: int = 0, limit: int = 100):
+    return db.crm.query(models.RcargaView).offset(skip).limit(limit).all()
+
+
+def get_users_grupo(db: Session, grupo: str):
+    return db.crm.query(models.Grupos_View).filter(models.Grupos_View.grupo == grupo).all()

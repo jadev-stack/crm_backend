@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import date, datetime
-from typing import List
+from typing import List, Optional
 from crm.schemas import Crm
 
 
@@ -13,6 +13,9 @@ class Rcarga_Estatus(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+""" Rcarga_Despacho """
 
 
 class Rcarga_EstatusCreate(Rcarga_Estatus):
@@ -36,6 +39,17 @@ class Rcarga_RutaCreate(BaseModel):
     ruta: str
     objetivo: int
     division_id: int
+
+
+class Rcarga_Despacho(BaseModel):
+    id: int
+    chofer: int
+    ayudante: int
+    vehiculo: int
+    rcarga_id: int
+
+    class Config:
+        orm_mode = True
 
 
 """ Rcarga """
@@ -101,6 +115,23 @@ class Rcarga_ItemCreate(BaseModel):
         orm_mode = True
 
 
+class Rcarga_View(BaseModel):
+    id: int
+    fecha: date
+    total: float
+    numero: int
+    ruta: str
+    estatus: str
+    division: str
+    estatus: str
+    chofer: Optional[str]
+    ayudante: Optional[str]
+    placa: Optional[str]
+
+    class Config:
+        orm_mode = True
+
+
 class Invoice(BaseModel):
     DocNum: int
     CardCode: str
@@ -108,3 +139,14 @@ class Invoice(BaseModel):
     Cajas: int
     Unidad: int
     TotalValor: float
+
+
+class Grupos_View(BaseModel):
+    id: int
+    username: str
+    nombre: Optional[str]
+    cargo: Optional[str]
+    grupo: Optional[str]
+
+    class Config:
+        orm_mode = True

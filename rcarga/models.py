@@ -2,7 +2,7 @@ from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DATETIME, F
 from database.crmbdd import Base
 from sqlalchemy.orm import relationship
 from login.models import User
-from crm.models import Sede, Division, Cargo
+from crm.models import Sede, Division, Cargo, Flota
 from datetime import datetime
 
 
@@ -26,6 +26,18 @@ class Rcarga_Ruta(Base):
     rcarga = relationship("Rcarga", back_populates="rcarga_ruta")
 
 
+class Rcarga_Despacho(Base):
+    __tablename__ = "rcarga_despacho"
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    chofer = Column(String(50))
+    ayudante = Column(String(50))
+    vehiculo = Column(Integer)
+    rcarga_id = Column(Integer, ForeignKey("rcarga.id"))
+
+    rcarga = relationship("Rcarga", uselist=False,
+                          back_populates="rcarga_despacho")
+
+
 class Rcarga(Base):
     __tablename__ = "rcarga"
 
@@ -40,7 +52,8 @@ class Rcarga(Base):
     division_id = Column(Integer, ForeignKey("division.id"))
     sede_id = Column(Integer, ForeignKey("sede.id"))
 
-    rcarga_despacho = relationship("Rcarga_Despacho", back_populates="rcarga")
+    rcarga_despacho = relationship(
+        "Rcarga_Despacho",  back_populates="rcarga")
     rcarga_item = relationship("Rcarga_Item", back_populates="rcarga")
     rcarga_division = relationship("Division", back_populates="rcarga")
     rcarga_estatus = relationship("Rcarga_Estatus", back_populates="rcarga")
@@ -63,17 +76,6 @@ class Rcarga_Item(Base):
     rcarga_liqui = relationship("Rcarga_Liqui", back_populates="rcarga_item")
 
 
-class Rcarga_Despacho(Base):
-    __tablename__ = "rcarga_despacho"
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    chofer = Column(Integer)
-    ayudante = Column(Integer)
-    fecha = Column(DATETIME)
-    rcarga_id = Column(Integer, ForeignKey("rcarga.id"))
-
-    rcarga = relationship("Rcarga", back_populates="rcarga_despacho")
-
-
 class Rcarga_Liqui(Base):
     __tablename__ = "rcarga_liqui"
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
@@ -84,3 +86,28 @@ class Rcarga_Liqui(Base):
     rcarga_item_id = Column(Integer, ForeignKey("rcarga_item.id"))
 
     rcarga_item = relationship("Rcarga_Item", back_populates="rcarga_liqui")
+
+
+class RcargaView(Base):
+    __tablename__ = "rcarga_view"
+
+    id = Column(Integer, primary_key=True)
+    numero = Column(Integer)
+    fecha = Column(DATETIME)
+    total = Column(Float)
+    division = Column(String(50))
+    ruta = Column(String(50))
+    estatus = Column(String(50))
+    chofer = Column(String(50))
+    ayudante = Column(String(50))
+    placa = Column(String(50))
+
+
+class Grupos_View(Base):
+    __tablename__ = "grupos_view"
+
+    id = Column(Integer, primary_key=True)
+    username = Column(String(50))
+    nombre = Column(String(50))
+    cargo = Column(String(50))
+    grupo = Column(String(50))

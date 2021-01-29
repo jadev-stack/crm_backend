@@ -106,3 +106,10 @@ def delete_division(db: Session, division_id: int):
         models.Division.id == division_id).first()
     db.delete(division)
     db.commit()
+
+
+""" Flota """
+
+
+def get_flota(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Flota).offset(skip).limit(limit).all()
