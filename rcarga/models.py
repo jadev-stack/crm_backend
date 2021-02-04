@@ -111,3 +111,21 @@ class Grupos_View(Base):
     nombre = Column(String(50))
     cargo = Column(String(50))
     grupo = Column(String(50))
+
+
+class RcargaLiquiView(Base):
+    __tablename__ = "rcarga_liqui_view"
+
+    docnum = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
+    numero = Column(Integer)
+    totalvalor = Column(Float)
+    fecha = Column(DATETIME)
+    division = Column(String(50))
+    ruta = Column(String(50))
+    estatus = Column(String(50))
+    cardname = Column(String)
+    fechare = Column(DATETIME)
+    docpago = Column(String)
+    documentos = Column(String)
+    reten = Column(String)

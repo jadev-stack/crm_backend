@@ -1,10 +1,10 @@
 from sqlalchemy.orm import Session
-from fastapi import HTTPException
+from fastapi import HTTPException, Request
 from . import schemas
 from . import models
 from . import mosap
 from login.models import User
-
+import json
 
 """ Rcarga_Estatus """
 
@@ -204,9 +204,28 @@ def delete_rcarga_item(db: Session, rcarga_id: int):
 """Rcarga_Despacho"""
 
 
-def get_rcarga_despacho(db: Session, skip: int = 0, limit: int = 100):
-    return db.crm.query(models.RcargaView).offset(skip).limit(limit).all()
+def get_rcarga_despacho(db: Session):
+    return db.crm.query(models.RcargaView).filter(models.RcargaView.estatus != 'ABIERTA').all()
+
+
+def get_rcarga_despacho_by_id(db: Session, rcarga_id: int):
+    return db.crm.query(models.Rcarga_Despacho).filter(models.Rcarga_Despacho.rcarga_id == rcarga_id).first()
 
 
 def get_users_grupo(db: Session, grupo: str):
     return db.crm.query(models.Grupos_View).filter(models.Grupos_View.grupo == grupo).all()
+
+
+def create_rcarga_despacho(db: Session, rcarga_id: str, chofer: str, ayudante: str, vehiculo: int):
+    db_rcarga_despacho = models.Rcarga_Despacho(chofer=chofer,
+                                                ayudante=ayudante,
+                                                vehiculo=vehiculo,
+                                                rcarga_id=rcarga_id)
+    db.crm.add(db_rcarga_despacho)
+    db.crm.commit()
+    rcarga = db.crm.query(models.RcargaView).all()
+    return rcarga
+
+
+def get_rcarga_liqui(db: Session, rcarga_id: int):
+    return db.crm.query(models.RcargaLiquiView).filter(models.RcargaLiquiView.id == rcarga_id).all()

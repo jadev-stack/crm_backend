@@ -43,8 +43,8 @@ class Rcarga_RutaCreate(BaseModel):
 
 class Rcarga_Despacho(BaseModel):
     id: int
-    chofer: int
-    ayudante: int
+    chofer: str
+    ayudante: str
     vehiculo: int
     rcarga_id: int
 
@@ -147,6 +147,25 @@ class Grupos_View(BaseModel):
     nombre: Optional[str]
     cargo: Optional[str]
     grupo: Optional[str]
+
+    class Config:
+        orm_mode = True
+
+
+class Rcarga_Liqui_View(BaseModel):
+    docnum: int
+    id: int
+    numero: int
+    totalvalor: float
+    fecha: date
+    division: str
+    ruta: str
+    estatus: str
+    cardname: str
+    fechare: Optional[date]
+    docpago: Optional[str]
+    documentos: Optional[str]
+    reten: Optional[str]
 
     class Config:
         orm_mode = True
