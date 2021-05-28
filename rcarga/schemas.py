@@ -52,12 +52,18 @@ class Rcarga_Despacho(BaseModel):
         orm_mode = True
 
 
+class Rcarga_Despacho_Create(BaseModel):
+    chofer: str
+    ayudante: str
+    vehiculo: int
+
+
 """ Rcarga """
 
 
 class Rcarga(BaseModel):
     id: int
-    fecha: date
+    fecha: datetime
     total: float
     vol: float
     numero: int
@@ -155,7 +161,7 @@ class Grupos_View(BaseModel):
 class Rcarga_Liqui_View(BaseModel):
     docnum: int
     id: int
-    numero: int
+    itemsid: int
     totalvalor: float
     fecha: date
     division: str
@@ -166,6 +172,58 @@ class Rcarga_Liqui_View(BaseModel):
     docpago: Optional[str]
     documentos: Optional[str]
     reten: Optional[str]
+    pago: Optional[float]
+
+    class Config:
+        orm_mode = True
+
+
+class Rcarga_Liqui(BaseModel):
+    id: int
+    fechare: date
+    docpago: str
+    documentos: str
+    reten: str
+    pago: float
+    rcarga_item_id: int
+    rcarga_id: int
+
+    class Config:
+        orm_mode = True
+
+
+class Rcarga_Liqui_Create(BaseModel):
+    docpago: str
+    documentos: str
+    reten: str
+    pago: float
+    rcarga_item_id: int
+    rcarga_id: int
+    fechare: date
+
+
+class DocNum(BaseModel):
+    docnum: List[int]
+
+
+class ItemsDetalle(BaseModel):
+    DocNum: int
+    ItemCode: str
+    ItemName: str
+    Cajas: int
+    Und: int
+
+    class Config:
+        orm_mode = True
+
+
+class ItemsDetalle2(BaseModel):
+
+    ItemCode: str
+    ItemName: str
+    Cajas: int
+    Und: int
+    UxC: int
 
     class Config:
         orm_mode = True

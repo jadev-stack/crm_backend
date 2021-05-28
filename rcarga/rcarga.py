@@ -115,8 +115,8 @@ def delete_a_rcarga_ruta(rcarga_ruta_id: int, db: DbParams = Depends(DbParams)):
 
 
 @router.get("/api/rcarga", response_model=List[schemas.Rcarga])
-def read_rcarga(skip: int = 0, limit: int = 100, db: DbParams = Depends(DbParams)):
-    rcarga = crud.get_rcarga(db, skip=skip, limit=limit)
+def read_rcarga(db: DbParams = Depends(DbParams)):
+    rcarga = crud.get_rcarga(db)
     return rcarga
 
 
@@ -166,6 +166,12 @@ def delete_a_rcarga(rcarga_id: int, db: DbParams = Depends(DbParams)):
     return {"detail": "Relación de Carga Eliminado"}
 
 
+@router.get("/api/rcarga_detalle", response_model=List[schemas.Rcarga])
+def read_rcarga(db: DbParams = Depends(DbParams)):
+    rcarga = crud.get_rcarga_detalle(db)
+    return rcarga
+
+
 """ Rcarga_Items """
 
 
@@ -210,7 +216,7 @@ def read_rcarga_by_id(rcarga_id: int, db: DbParams = Depends(DbParams)):
     return db_rcarga
 
 
-""" Rcarga_view """
+""" Rcarga_Despacho """
 
 
 @router.get("/api/rcarga_despacho/", response_model=List[schemas.Rcarga_View])
@@ -238,18 +244,37 @@ def read_ayudante(db: DbParams = Depends(DbParams),  grupo: str = 'AYUDATES'):
 
 
 @router.post("/api/despacho/{rcarga_id}", response_model=List[schemas.Rcarga_View])
-async def create_rcarga_depacho(rcarga_id: int, chofer: str = Body(...), ayudante: str = Body(...),
-                                vehiculo: int = Body(...), db: DbParams = Depends(DbParams)):
+async def create_rcarga_depacho(rcarga_id: int, rcarga_despacho: schemas.Rcarga_Despacho_Create, db: DbParams = Depends(DbParams)):
     rcarga = crud.get_rcarga_despacho_by_id(db, rcarga_id)
 
     if rcarga is None:
-        return crud.create_rcarga_despacho(db=db, rcarga_id=rcarga_id, chofer=chofer,
-                                           vehiculo=vehiculo, ayudante=ayudante, )
+        return crud.create_rcarga_despacho(db=db, rcarga_despacho=rcarga_despacho, rcarga_id=rcarga_id)
     else:
-        return crud.update_rcarga_despacho(db=db, rcarga_id=rcarga_id, despacho=await request.body())
+        return crud.update_rcarga_despacho(db=db, rcarga_despacho=rcarga_despacho, rcarga_id=rcarga_id, id=rcarga.id)
+
+
+""" Rcarga_Liquidacion """
 
 
 @router.get("/api/rcarga_liqui/{rcarga_id}", response_model=List[schemas.Rcarga_Liqui_View])
 def read_rcarga_liqui(rcarga_id: int, db: DbParams = Depends(DbParams)):
     rcarga_liqui = crud.get_rcarga_liqui(db,  rcarga_id=rcarga_id)
     return rcarga_liqui
+
+
+@router.post("/api/rcarga_liqui/", response_model=List[schemas.Rcarga_Liqui_View])
+def create_rcarga_liqui(liqui: schemas.Rcarga_Liqui_Create, db: DbParams = Depends(DbParams)):
+    rcarga = crud.get_rcarga_liqui_by_id(db, liqui.rcarga_item_id)
+    if rcarga is None:
+        return crud.create_rcarga_liqui(db=db, liqui=liqui)
+    else:
+        return crud.update_rcarga_liqui(db=db, liqui=liqui)
+
+
+""" Rcarga Detalle """
+
+
+@router.post("/api/rcarga_detalle/{divi}", response_model=List[schemas.ItemsDetalle2])
+def read_rcarga(DocNum: schemas.DocNum, divi: int, db: DbParams = Depends(DbParams)):
+    rcarga = crud.get_items_detalle(db, DocNum=DocNum, divi=divi)
+    return rcarga

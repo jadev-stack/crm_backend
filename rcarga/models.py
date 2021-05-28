@@ -82,6 +82,7 @@ class Rcarga_Liqui(Base):
     documentos = Column(String(100))
     reten = Column(String(50))
     docpago = Column(String)
+    pago = Column(Float)
     fechare = Column(DATETIME)
     rcarga_item_id = Column(Integer, ForeignKey("rcarga_item.id"))
 
@@ -118,7 +119,7 @@ class RcargaLiquiView(Base):
 
     docnum = Column(Integer, primary_key=True)
     id = Column(Integer, primary_key=True)
-    numero = Column(Integer)
+    itemsid = Column(Integer)
     totalvalor = Column(Float)
     fecha = Column(DATETIME)
     division = Column(String(50))
@@ -129,3 +130,4 @@ class RcargaLiquiView(Base):
     docpago = Column(String)
     documentos = Column(String)
     reten = Column(String)
+    pago = Column(Float)

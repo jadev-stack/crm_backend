@@ -1,10 +1,13 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from fastapi import HTTPException, Request
 from . import schemas
 from . import models
 from . import mosap
 from login.models import User
 import json
+from datetime import datetime
+from typing import List
 
 """ Rcarga_Estatus """
 
@@ -83,8 +86,8 @@ def delete_rcarga_ruta(db: Session, rcarga_ruta_id: int):
 """Rcarga"""
 
 
-def get_rcarga(db: Session, skip: int = 0, limit: int = 100):
-    return db.crm.query(models.Rcarga).offset(skip).limit(limit).all()
+def get_rcarga(db: Session, ):
+    return db.crm.query(models.Rcarga).filter(models.Rcarga.estatus_id != 5).all()
 
 
 def get_rcarga_by_id(db: Session, rcarga_id: int):
@@ -216,16 +219,87 @@ def get_users_grupo(db: Session, grupo: str):
     return db.crm.query(models.Grupos_View).filter(models.Grupos_View.grupo == grupo).all()
 
 
-def create_rcarga_despacho(db: Session, rcarga_id: str, chofer: str, ayudante: str, vehiculo: int):
-    db_rcarga_despacho = models.Rcarga_Despacho(chofer=chofer,
-                                                ayudante=ayudante,
-                                                vehiculo=vehiculo,
+def create_rcarga_despacho(db: Session, rcarga_id: str, rcarga_despacho: schemas.Rcarga_Despacho_Create):
+    db_rcarga_despacho = models.Rcarga_Despacho(chofer=rcarga_despacho.chofer,
+                                                ayudante=rcarga_despacho.ayudante,
+                                                vehiculo=rcarga_despacho.vehiculo,
                                                 rcarga_id=rcarga_id)
     db.crm.add(db_rcarga_despacho)
     db.crm.commit()
-    rcarga = db.crm.query(models.RcargaView).all()
-    return rcarga
+    return get_rcarga_despacho(db)
+
+
+def update_rcarga_despacho(db: Session, rcarga_despacho: schemas.Rcarga_Despacho, rcarga_id: int, id: int):
+    db_rcarga_despacho = db.crm.query(models.Rcarga_Despacho).filter(
+        models.Rcarga_Despacho.id == id).first()
+    db_rcarga_despacho.chofer = rcarga_despacho.chofer
+    db_rcarga_despacho.ayudante = rcarga_despacho.ayudante
+    db_rcarga_despacho.vehiculo = rcarga_despacho.vehiculo
+    db_rcarga_despacho.rcarga_id = rcarga_id
+    db.crm.commit()
+    db.crm.refresh(db_rcarga_despacho)
+    return get_rcarga_despacho(db)
+
+
+""" Rcarga_Liquidacion """
 
 
 def get_rcarga_liqui(db: Session, rcarga_id: int):
     return db.crm.query(models.RcargaLiquiView).filter(models.RcargaLiquiView.id == rcarga_id).all()
+
+
+def get_rcarga_liqui_by_id(db: Session, rcarga_id: int):
+    return db.crm.query(models.Rcarga_Liqui).filter(models.Rcarga_Liqui.rcarga_item_id == rcarga_id).first()
+
+
+def create_rcarga_liqui(db: Session,  liqui: schemas.Rcarga_Liqui_Create):
+    db_rcarga_liqui = models.Rcarga_Liqui(documentos=liqui.documentos,
+                                          reten=liqui.reten,
+                                          docpago=liqui.docpago,
+                                          fechare=liqui.fechare,
+                                          pago=liqui.pago,
+                                          rcarga_item_id=liqui.rcarga_item_id)
+    db.crm.add(db_rcarga_liqui)
+    db.crm.commit()
+    rcarga = db.crm.query(models.RcargaLiquiView).filter(
+        models.RcargaLiquiView.id == liqui.rcarga_id).all()
+    return rcarga
+
+
+def update_rcarga_liqui(db: Session, liqui: schemas.Rcarga_Liqui):
+    db_rcarga_liqui = db.crm.query(models.Rcarga_Liqui).filter(
+        models.Rcarga_Liqui.rcarga_item_id == liqui.rcarga_item_id).first()
+    db_rcarga_liqui.fechare = liqui.fechare
+    db_rcarga_liqui.docpago = liqui.docpago
+    db_rcarga_liqui.documentos = liqui.documentos
+    db_rcarga_liqui.reten = liqui.reten
+    db_rcarga_liqui.pago = liqui.pago
+    db_rcarga_liqui.rcarga_id = liqui.rcarga_id
+    db_rcarga_liqui.rcarga_item_id = liqui.rcarga_item_id
+    db.crm.commit()
+    db.crm.refresh(db_rcarga_liqui)
+    return get_rcarga_liqui(db, liqui.rcarga_id)
+
+
+""" Rcarga Detalle """
+
+
+def get_items_detalle(db: Session, DocNum: schemas.DocNum, divi: int):
+    if divi == 1:
+        return db.lico.query(func.sum(mosap.ItemsDetalle.Cajas).label("Cajas"),
+                             func.sum(mosap.ItemsDetalle.Und).label(
+                                 "Und"), mosap.ItemsDetalle.ItemCode, mosap.ItemsDetalle.UxC,
+                             mosap.ItemsDetalle.ItemName).filter(mosap.ItemsDetalle.DocNum.in_(DocNum.docnum)).group_by(mosap.ItemsDetalle.ItemCode, mosap.ItemsDetalle.ItemName, mosap.ItemsDetalle.UxC).all()
+    elif divi == 2:
+        return db.distri.query(func.sum(mosap.ItemsDetalle.Cajas).label("Cajas"),
+                               func.sum(mosap.ItemsDetalle.Und).label(
+            "Und"), mosap.ItemsDetalle.ItemCode, mosap.ItemsDetalle.UxC,
+            mosap.ItemsDetalle.ItemName).filter(mosap.ItemsDetalle.DocNum.in_(DocNum.docnum)).group_by(mosap.ItemsDetalle.ItemCode, mosap.ItemsDetalle.ItemName, mosap.ItemsDetalle.UxC).all()
+    elif divi == 3:
+        return db.mobil.query(func.sum(mosap.ItemsDetalle.Cajas).label("Cajas"),
+                              func.sum(mosap.ItemsDetalle.Und).label(
+            "Und"), mosap.ItemsDetalle.ItemCode, mosap.ItemsDetalle.UxC,
+            mosap.ItemsDetalle.ItemName).filter(mosap.ItemsDetalle.DocNum.in_(DocNum.docnum)).group_by(mosap.ItemsDetalle.ItemCode, mosap.ItemsDetalle.ItemName, mosap.ItemsDetalle.UxC).all()
+    else:
+        raise HTTPException(
+            status_code=404, detail="Division No Encontrada")

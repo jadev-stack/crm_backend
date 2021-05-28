@@ -13,3 +13,14 @@ class ItemsDoc(Eurolicores):
     TotalValor = Column(Float)
     Cajas = Column(Integer)
     Unidad = Column(Integer)
+
+
+class ItemsDetalle(Eurolicores):
+    __tablename__ = "items_detalle_view"
+
+    DocNum = Column(Integer, primary_key=True)
+    ItemCode = Column(String(30))
+    ItemName = Column(String(50))
+    Cajas = Column(Integer)
+    Und = Column(Integer)
+    UxC = Column(Integer)
