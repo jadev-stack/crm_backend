@@ -25,8 +25,8 @@ async def get_rcarga():
 
 
 @router.get("/api/rcarga_estatus", response_model=List[schemas.Rcarga_Estatus])
-def read_rcarga_estatus(skip: int = 0, limit: int = 100, db: DbParams = Depends(DbParams)):
-    rcarga_estatus = crud.get_rcarga_estatus(db, skip=skip, limit=limit)
+def read_rcarga_estatus(db: DbParams = Depends(DbParams)):
+    rcarga_estatus = crud.get_rcarga_estatus(db)
     return rcarga_estatus
 
 
@@ -70,8 +70,8 @@ def delete_a_rcarga_estatus(rcarga_estatus_id: int, db: DbParams = Depends(DbPar
 
 
 @router.get("/api/rcarga_ruta", response_model=List[schemas.Rcarga_Ruta])
-def read_rcarga_ruta(skip: int = 0, limit: int = 100, db: DbParams = Depends(DbParams)):
-    rcarga_ruta = crud.get_rcarga_ruta(db, skip=skip, limit=limit)
+def read_rcarga_ruta(db: DbParams = Depends(DbParams)):
+    rcarga_ruta = crud.get_rcarga_ruta(db)
     return rcarga_ruta
 
 

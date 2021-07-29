@@ -21,12 +21,12 @@ async def get_rcarga(current_user: schlogin.User = Depends(login.get_current_use
 async def get_rcarga():
     return {"message": "API CRM"}
 
-""" Cargos """
+""" Endpoint for CRUD Object Cargos """
 
 
 @router.get("/api/cargos", response_model=List[schemas.Crm])
-def read_cargos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    cargos = crud.get_cargos(db, skip=skip, limit=limit)
+def read_cargos(db: Session = Depends(get_db)):
+    cargos = crud.get_cargos(db)
     return cargos
 
 
@@ -60,12 +60,12 @@ def delete_a_cargo(cargo_id: int, db: Session = Depends(get_db)):
     return {"detail": "Cargo Eliminado"}
 
 
-""" Sedes """
+""" Endpoint for CRUD Object Sedes """
 
 
 @router.get("/api/sedes", response_model=List[schemas.Crm])
-def read_sedes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    sedes = crud.get_sedes(db, skip=skip, limit=limit)
+def read_sedes(db: Session = Depends(get_db)):
+    sedes = crud.get_sedes(db)
     return sedes
 
 
@@ -99,12 +99,12 @@ def delete_a_sede(sede_id: int, db: Session = Depends(get_db)):
     return {"detail": "Sede Eliminado"}
 
 
-""" Division """
+""" Endpoint for CRUD Object Division """
 
 
 @router.get("/api/division", response_model=List[schemas.Crm])
-def read_division(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    division = crud.get_division(db, skip=skip, limit=limit)
+def read_division(db: Session = Depends(get_db)):
+    division = crud.get_division(db)
     return division
 
 
@@ -117,7 +117,7 @@ def read_division_by_id(division_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/api/division", response_model=schemas.Crm)
-def create_user(division: schemas.CrmCreate, db: Session = Depends(get_db)):
+def create_division(division: schemas.CrmCreate, db: Session = Depends(get_db)):
     return crud.create_division(db=db, division=division)
 
 
@@ -130,7 +130,7 @@ def update_division(division_id: int, division: schemas.CrmCreate, db: Session =
 
 
 @router.delete("/api/division/{division_id}")
-def delete_a_sede(division_id: int, db: Session = Depends(get_db)):
+def delete_a_division(division_id: int, db: Session = Depends(get_db)):
     db_division = crud.get_division_by_id(db, division_id=division_id)
     if db_division is None:
         raise HTTPException(status_code=404, detail="Division no Existe")
@@ -138,10 +138,10 @@ def delete_a_sede(division_id: int, db: Session = Depends(get_db)):
     return {"detail": "Division Eliminado"}
 
 
-""" Flota """
+""" Endpoint for CRUD Object Flota """
 
 
 @router.get("/api/flota", response_model=List[schemas.Flota])
-def read_cargos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    cargos = crud.get_flota(db, skip=skip, limit=limit)
+def read_cargos(db: Session = Depends(get_db)):
+    cargos = crud.get_flota(db)
     return cargos

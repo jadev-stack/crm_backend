@@ -5,11 +5,11 @@ from . import schemas
 from . import models
 
 
-""" Cargos """
+""" CRUD Object Cargos """
 
 
-def get_cargos(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Cargo).offset(skip).limit(limit).all()
+def get_cargos(db: Session):
+    return db.query(models.Cargo).all()
 
 
 def get_cargo_by_id(db: Session, cargo_id: int):
@@ -39,11 +39,11 @@ def delete_cargo(db: Session, cargo_id: int):
     db.commit()
 
 
-""" Sedes """
+""" CRUD Object Sedes """
 
 
-def get_sedes(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Sede).offset(skip).limit(limit).all()
+def get_sedes(db: Session):
+    return db.query(models.Sede).all()
 
 
 def get_sede_by_id(db: Session, sede_id: int):
@@ -73,11 +73,11 @@ def delete_sede(db: Session, sede_id: int):
     db.commit()
 
 
-""" Division """
+""" CRUD Object Division """
 
 
-def get_division(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Division).offset(skip).limit(limit).all()
+def get_division(db: Session):
+    return db.query(models.Division).all()
 
 
 def create_division(db: Session, division: schemas.Crm):
@@ -108,8 +108,8 @@ def delete_division(db: Session, division_id: int):
     db.commit()
 
 
-""" Flota """
+""" CRUD Object Flota """
 
 
-def get_flota(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Flota).offset(skip).limit(limit).all()
+def get_flota(db: Session):
+    return db.query(models.Flota).all()

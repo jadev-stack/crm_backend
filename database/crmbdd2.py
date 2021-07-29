@@ -20,6 +20,7 @@ eurolicores = create_engine(EUROLICORES_DATABASE_URL)
 eurodistribution = create_engine(EURODISTRIBUTION_DATABASE_URL)
 euromobil = create_engine(EUROMOBIL_DATABASE_URL)
 
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 SessionLicores = sessionmaker(
     autocommit=False, autoflush=False, bind=eurolicores)

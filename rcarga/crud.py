@@ -12,8 +12,8 @@ from typing import List
 """ Rcarga_Estatus """
 
 
-def get_rcarga_estatus(db: Session, skip: int = 0, limit: int = 100):
-    return db.crm.query(models.Rcarga_Estatus).offset(skip).limit(limit).all()
+def get_rcarga_estatus(db: Session):
+    return db.crm.query(models.Rcarga_Estatus).all()
 
 
 def get_rcarga_estatus_by_id(db: Session, rcarga_estatus_id: int):
@@ -47,8 +47,8 @@ def delete_rcarga_estatus(db: Session, rcarga_estatus_id: int):
 """ Rcarga_Ruta """
 
 
-def get_rcarga_ruta(db: Session, skip: int = 0, limit: int = 100):
-    return db.crm.query(models.Rcarga_Ruta).offset(skip).limit(limit).all()
+def get_rcarga_ruta(db: Session):
+    return db.crm.query(models.Rcarga_Ruta).all()
 
 
 def get_rcarga_ruta_by_id(db: Session, rcarga_ruta_id: int):

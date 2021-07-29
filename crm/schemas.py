@@ -1,6 +1,9 @@
 from pydantic import BaseModel
 
 
+""" Shemas for CRM Objects """
+
+
 class Crm(BaseModel):
     id: int
     name: str

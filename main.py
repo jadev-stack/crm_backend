@@ -3,12 +3,13 @@ import uvicorn
 from login import login
 from rcarga import rcarga
 from crm import crm
+from maestra import maestra
 from fastapi.middleware.cors import CORSMiddleware
 from database.crmbdd import Base, engine
 
 app = FastAPI()
 
-Base.metadata.create_all(bind=engine)
+"""Base.metadata.create_all(bind=engine)"""
 
 origins = [
     "http://localhost:3000",
@@ -27,6 +28,7 @@ app.add_middleware(
 app.include_router(login.router)
 app.include_router(rcarga.router)
 app.include_router(crm.router)
+app.include_router(maestra.router)
 
 
 if __name__ == "__main__":
